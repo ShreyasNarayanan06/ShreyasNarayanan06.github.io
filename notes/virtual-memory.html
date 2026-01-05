@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Virtual Memory Management Notes">
+    <title>Virtual Memory Management | Shreyas Narayanan</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .note-content pre {
+            background: #1a1a1a;
+            color: #f0f0f0;
+            padding: 16px;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+
+        .note-content code {
+            background: #e0e0e0;
+            padding: 2px 6px;
+            font-size: 0.9em;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .note-content code {
+                background: #3a3a3a;
+            }
+        }
+
+        .note-content pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .note-content ul,
+        .note-content ol {
+            margin-left: 20px;
+            margin-bottom: 16px;
+        }
+
+        .note-content li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <p><a href="../projects/testos.html">← Back to TestOS</a></p>
+
+    <article class="note-content">
+        <h1>Virtual Memory Management</h1>
+
+        <h2>Virtual Memory Structure</h2>
+        <ul>
+            <li>Virtual Memory Management is primarily built upon the idea of page tables</li>
+            <li>This necessitates that there be a page table structure. In this case and how most contemporary Operating
+                Systems handle it is:
+                <ul>
+                    <li>Making a Page Directory (1st level page table) which is allocated 1 page</li>
+                    <li>Each entry in the PD holds the address of a page table</li>
+                    <li>Each page table holds 1 pages worth (1024) of addresses to physical pages</li>
+                    <li>Generally, each entry in the PD is set to 0 on initialization and then uses the physical page
+                        allocation to allocate a new page for each page table (the same holds true for how pages within
+                        the page table are allocated)</li>
+                    <li><strong>This derives the following hierarchy: Page Directory → Page Table → Page</strong></li>
+                </ul>
+            </li>
+        </ul>
+
+        <pre><code>void vmem_init() {
+    uint32_t page_directory_addr = (uint32_t)pm_alloc_page(); //allocates a page for the PD
+    page_directory = (uint32_t*)page_directory_addr; //sets the PD pointer globally
+    
+    // Set all of the bits in the top level page table to 0
+    for (int i = 0; i < 1024; i++) {
+        page_directory[i] = 0;
+    }
+    
+    uint32_t page_table_1_addr = (uint32_t)pm_alloc_page(); //get the address of a new page table
+    uint32_t* page_table_1 = (uint32_t*)page_table_1_addr; //set the pointer
+    
+    for (int i = 0; i < 1024; i++) { //Same as before
+        page_table_1[i] = 0;
+    }
+    
+    // Set the page directory index 0 to the pt1 we made
+    page_directory[0] = (page_table_1_addr | 0x3);
+    
+    page_directory[1023] = (uint32_t)page_directory | 0x3; //Turn on all relevant setting for the page table recursive entry
+    
+    set_page_directory(page_directory_addr);  // Set the page directory
+    enable_paging();  // Enable paging
+}</code></pre>
+
+        <p>One quirky implementation detail from vmem_init() is that we set the final entry of the page table to be
+            equal to the address of the page table. This is so that we have a fixed virtual address from which we can
+            edit physical page tables from. This is covered in depth more with kmalloc and kfree.</p>
+
+        <h2>Accessing Virtual Memory</h2>
+        <ul>
+            <li>The process of accessing virtual memory is fairly simple but uses some built in features from the CPU to
+                make it happen</li>
+            <li>A virtual memory address can be divided into 3 separate parts: Page Directory Index | Page Table Index |
+                Page Offset all which are self explanatory</li>
+            <li>When a certain virtual address is accessed the following is what happens under the hood:
+                <ol>
+                    <li>The CPU uses the CR3 register, which is set in vmem_init() to find the physical address of the
+                        page directory (assembly shown below)</li>
+                    <li>The CPU uses the PD Index to find the correct page table</li>
+                    <li>The CPU follows the pointer to that address and uses the page table index to find the correct
+                        page</li>
+                    <li>The CPU follows the address to the correct physical page and uses the offset to get the
+                        requested data</li>
+                </ol>
+            </li>
+        </ul>
+
+        <p>The relevant assembly functions are used in conjunction with the infrastructure set up in vmem_init() in
+            order to allow us to access physical memory using virtual memory addresses:</p>
+
+        <pre><code>get_page_directory:
+    mov %cr3, %eax
+    ret
+
+set_page_directory:
+    mov 4(%esp), %eax
+    mov %eax, %cr3
+    ret
+
+enable_paging:
+    mov %cr0, %eax
+    or %eax, 0x80000000
+    mov %eax, %cr0
+    ret</code></pre>
+
+    </article>
+
+    <footer>
+        <p>© 2026 Shreyas Narayanan</p>
+    </footer>
+</body>
+
+</html>
