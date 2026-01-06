@@ -7,6 +7,10 @@
     <meta name="description" content="TestOS - Custom x86 Operating System">
     <title>TestOS | Shreyas Narayanan</title>
     <link rel="stylesheet" href="../styles.css">
+    <!-- Highlight.js for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
     <style>
         .readme-content {
             padding: 20px;
@@ -26,10 +30,11 @@
         }
 
         .readme-content pre {
-            background: #1a1a1a;
-            color: #f0f0f0;
+            background: #0d1117 !important;
             padding: 12px;
             overflow-x: auto;
+            border-radius: 6px;
+            margin: 16px 0;
         }
 
         .readme-content code {
@@ -45,8 +50,9 @@
         }
 
         .readme-content pre code {
-            background: none;
-            padding: 0;
+            background: #0d1117 !important;
+            padding: 16px;
+            display: block;
         }
     </style>
 </head>
@@ -83,21 +89,38 @@
     <script>
         async function fetchReadme() {
             try {
-                // Fetch raw markdown from GitHub
                 const response = await fetch('https://raw.githubusercontent.com/ShreyasNarayanan06/testos/main/README.md');
                 if (response.ok) {
                     const text = await response.text();
-                    // Simple markdown to HTML (handles basic formatting)
-                    let html = text
+
+                    // Handle fenced code blocks first (```lang ... ```)
+                    let html = text.replace(/```(\w*)\n([\s\S]*?)```/g, function (match, lang, code) {
+                        const escapedCode = code
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;');
+                        return '<pre><code class="language-' + (lang || 'plaintext') + '">' + escapedCode.trim() + '</code></pre>';
+                    });
+
+                    // Then handle other markdown
+                    html = html
                         .replace(/^### (.*$)/gm, '<h3>$1</h3>')
                         .replace(/^## (.*$)/gm, '<h2>$1</h2>')
                         .replace(/^# (.*$)/gm, '<h1>$1</h1>')
                         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                         .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                        .replace(/`(.*?)`/g, '<code>$1</code>')
+                        .replace(/`([^`]+)`/g, '<code>$1</code>')
                         .replace(/\n\n/g, '</p><p>')
                         .replace(/\n/g, '<br>');
+
                     document.getElementById('readme').innerHTML = '<p>' + html + '</p>';
+
+                    // Trigger highlight.js if loaded
+                    if (typeof hljs !== 'undefined') {
+                        document.querySelectorAll('#readme pre code').forEach((block) => {
+                            hljs.highlightElement(block);
+                        });
+                    }
                 } else {
                     document.getElementById('readme').innerHTML = '<p>README not available. <a href="https://github.com/ShreyasNarayanan06/testos">View on GitHub</a></p>';
                 }
