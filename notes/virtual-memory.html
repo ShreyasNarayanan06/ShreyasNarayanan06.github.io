@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,36 +14,29 @@
             overflow-x: auto;
             margin: 16px 0;
         }
-
         .note-content code {
             background: #e0e0e0;
             padding: 2px 6px;
             font-size: 0.9em;
         }
-
         @media (prefers-color-scheme: dark) {
             .note-content code {
                 background: #3a3a3a;
             }
         }
-
         .note-content pre code {
             background: none;
             padding: 0;
         }
-
-        .note-content ul,
-        .note-content ol {
+        .note-content ul, .note-content ol {
             margin-left: 20px;
             margin-bottom: 16px;
         }
-
         .note-content li {
             margin-bottom: 8px;
         }
     </style>
 </head>
-
 <body>
     <p><a href="../projects/testos.html">← Back to TestOS</a></p>
 
@@ -54,21 +46,18 @@
         <h2>Virtual Memory Structure</h2>
         <ul>
             <li>Virtual Memory Management is primarily built upon the idea of page tables</li>
-            <li>This necessitates that there be a page table structure. In this case and how most contemporary Operating
-                Systems handle it is:
+            <li>This necessitates that there be a page table structure. In this case and how most contemporary Operating Systems handle it is:
                 <ul>
                     <li>Making a Page Directory (1st level page table) which is allocated 1 page</li>
                     <li>Each entry in the PD holds the address of a page table</li>
                     <li>Each page table holds 1 pages worth (1024) of addresses to physical pages</li>
-                    <li>Generally, each entry in the PD is set to 0 on initialization and then uses the physical page
-                        allocation to allocate a new page for each page table (the same holds true for how pages within
-                        the page table are allocated)</li>
+                    <li>Generally, each entry in the PD is set to 0 on initialization and then uses the physical page allocation to allocate a new page for each page table (the same holds true for how pages within the page table are allocated)</li>
                     <li><strong>This derives the following hierarchy: Page Directory → Page Table → Page</strong></li>
                 </ul>
             </li>
         </ul>
 
-        <pre><code>void vmem_init() {
+<pre><code>void vmem_init() {
     uint32_t page_directory_addr = (uint32_t)pm_alloc_page(); //allocates a page for the PD
     page_directory = (uint32_t*)page_directory_addr; //sets the PD pointer globally
     
@@ -93,33 +82,27 @@
     enable_paging();  // Enable paging
 }</code></pre>
 
-        <p>One quirky implementation detail from vmem_init() is that we set the final entry of the page table to be
-            equal to the address of the page table. This is so that we have a fixed virtual address from which we can
-            edit physical page tables from. This is covered in depth more with kmalloc and kfree.</p>
+        <p>One quirky implementation detail from <code>vmem_init()</code> is that we set the final entry of the page table to be equal to the address of the page table. This is so that we have a fixed virtual address from which we can edit physical page tables from. This is covered in depth more with <code>kmalloc()</code> and <code>kfree()</code>.</p>
+
+        <hr>
 
         <h2>Accessing Virtual Memory</h2>
         <ul>
-            <li>The process of accessing virtual memory is fairly simple but uses some built in features from the CPU to
-                make it happen</li>
-            <li>A virtual memory address can be divided into 3 separate parts: Page Directory Index | Page Table Index |
-                Page Offset all which are self explanatory</li>
-            <li>When a certain virtual address is accessed the following is what happens under the hood:
+            <li>The process of accessing virtual memory is fairly simple but uses some built in features from the CPU to make it happen</li>
+            <li>A virtual memory address can be divided into 3 separate parts: Page Directory Index | Page Table Index | Page Offset all which are self explanatory</li>
+            <li>When a certain virtual address is accessed the following is what happens under the hood. This operation is performed by a hardware component: the MMU:
                 <ol>
-                    <li>The CPU uses the CR3 register, which is set in vmem_init() to find the physical address of the
-                        page directory (assembly shown below)</li>
+                    <li>The CPU uses the <code>%cr3</code> register, which is set in <code>vmem_init()</code> to find the physical address of the page directory (assembly shown below)</li>
                     <li>The CPU uses the PD Index to find the correct page table</li>
-                    <li>The CPU follows the pointer to that address and uses the page table index to find the correct
-                        page</li>
-                    <li>The CPU follows the address to the correct physical page and uses the offset to get the
-                        requested data</li>
+                    <li>The CPU follows the pointer to that address and uses the page table index to find the correct page</li>
+                    <li>The CPU follows the address to the correct physical page and uses the offset to get the requested data</li>
                 </ol>
             </li>
         </ul>
 
-        <p>The relevant assembly functions are used in conjunction with the infrastructure set up in vmem_init() in
-            order to allow us to access physical memory using virtual memory addresses:</p>
+        <p>The relevant assembly functions are used in conjunction with the infrastructure set up in <code>vmem_init()</code> in order to allow us to access physical memory using virtual memory addresses:</p>
 
-        <pre><code>get_page_directory:
+<pre><code>get_page_directory:
     mov %cr3, %eax
     ret
 
@@ -134,11 +117,132 @@ enable_paging:
     mov %eax, %cr0
     ret</code></pre>
 
+        <hr>
+
+        <h2>Allocating Virtual Memory</h2>
+        <ul>
+            <li>Allocating virtual memory is primarily done through using <code>kmalloc()</code> and <code>kfree()</code></li>
+            <li>Both of these functions require some overhead to be setup beforehand in order for them to work as seamlessly as possible</li>
+            <li>This overhead comes in the form of the heap, which is a region of memory used for dynamic allocation
+                <ul>
+                    <li>This allows us to request n byte sized blocks in memory at runtime without having to set aside a massive portion of memory before compile</li>
+                    <li>The way this works is that we allocate a <code>heap_start</code> and <code>heap_end</code> which are both virtual memory addresses and set a next_free pointer equal to <code>heap_start</code></li>
+                    <li>This means that we can track the next free page in memory within the heap which makes allocation a fairly straightforward process</li>
+                    <li>Each virtual block has a header allocated before it which lists out the blocks size and free status. This allows us to make a linked list in the header where 1 header points to the next</li>
+                    <li>This is quite a rudimentary process, however, because if a <code>kfree()</code> happens on a piece of data, its impossible to utilize that data afterwards because the linked list grows into empty, never allocated, space on the heap</li>
+                </ul>
+            </li>
+        </ul>
+
+<pre><code>void heap_init() {
+    heap_start = (uint32_t*)0xD0000000; //arbitrary start, since we're in vmem for the heap it does not really matter where it starts only that it doesnt collide with other vmem addresses
+    
+    heap_end = (uint32_t*)0xE0000000;
+    next_free = heap_start;
+}</code></pre>
+
+        <p>Below is the <code>kmalloc()</code> function which uses a number of the principles listed above:</p>
+
+<pre><code>uint32_t* kmalloc(uint32_t size) { //fix approach later. needs to not be a bump allocator
+    struct heap_header* header = (struct heap_header*)next_free;
+    header->is_free = 0;
+    header->size = size;
+    header->prev = prev_free;
+    header->next = NULL;
+    prev_free = header; //prev_free is a global variable which tracks the prev_free header
+    
+    uint32_t addr = (uint32_t)next_free + sizeof(struct heap_header) + size;
+    
+    if (addr % 8 != 0) { //aligns the newly allocated memory to 8 byte boundary
+        addr += (8 - (addr % 8));
+    }
+    
+    next_free = (uint32_t*)addr;
+    
+    if (next_free > heap_end) { //handles when we run out of memory
+        terminal_writestring("Out of memory\n");
+        while(1);
+    }
+    
+    return (uint32_t*)(header + 1);
+}</code></pre>
+
+        <hr>
+
+        <h3>The Fault Handler</h3>
+        <ul>
+            <li>The fault handler is a function which deals with when the kernel tries to access a value in memory that has not yet been allocated</li>
+            <li>The first step in the fault handlers operation is getting the address of the fault from the CPU.
+                <ul>
+                    <li>The MMU discussed before, if there isn't a mapped address, will put the faulting_address into the <code>%cr2</code> register</li>
+                    <li>We can read this with the function below</li>
+                </ul>
+            </li>
+        </ul>
+
+<pre><code>read_faulting_address:
+    mov %cr2, %eax
+    ret</code></pre>
+
+        <ul>
+            <li>From the address we can get the page directory index, page table index, and the page offset</li>
+            <li>This allows us to create a page in the correct place in memory (where the faulting address was)</li>
+            <li>We make sure to 0 out any data in the new page just for safety as well</li>
+            <li>Finally, we <code>iret</code> to return from the interrupt that generated the faulting address and allow us to re-enter the main operation loop</li>
+            <li>We also flush the TLB to remove any bogus values</li>
+        </ul>
+
+        <p>The code for the <code>fault_handler()</code> is below:</p>
+
+<pre><code>void fault_handler() {
+    uint32_t fault_addr = read_faulting_address(); //get the faulting addr from asm
+    
+    uint32_t pdidx = fault_addr >> 22; //extract the correct page directory idx
+    uint32_t ptidx = (fault_addr >> 12) & 0x3FF; //same for page table
+    
+    if((virtual_PD[pdidx] & 0x1) == 0) { // if the value in the page table entry is 0 then we know its not been allocated so we need to allocate a new page
+        virtual_PD[pdidx] = pm_alloc_page() | 0x3; //set all the variables in the entry
+        for(int i = 0; i < 1024; i++) virtual_PTs(pdidx)[i] = 0; // 0 out all the data
+    }
+    
+    if((virtual_PTs(pdidx)[ptidx] & 0x1) == 0) { //create a new page in the pt if needed
+        virtual_PTs(pdidx)[ptidx] = pm_alloc_page() | 0x3; 
+    }
+    
+    flush_TLB(fault_addr); //flush TLB
+    asm volatile ("iret"); //IRET
+}</code></pre>
+
+        <ul>
+            <li><strong>Recursive Mapping</strong>: By setting the last entry of the Page Directory to its own physical address, the MMU "tricks" the CPU into treating the Page Directory as a Page Table, providing a fixed virtual address where all your Page Tables are mapped and accessible.</li>
+            <li><strong>Avoiding the Catch-22</strong>: This <code>virtual_PD</code> is necessary because while paging is active, the kernel cannot directly access physical addresses; recursive mapping allows you to edit Page Table entries using standard pointers without manually mapping and unmapping physical frames every time a fault occurs.</li>
+        </ul>
+
+        <hr>
+
+        <h3>kfree()</h3>
+        <ul>
+            <li>The <code>kfree()</code> function works by simply combining free blocks in memory</li>
+            <li>This requires just making sure the headers are representing the correct size in memory and pointing to the next header and previous header properly</li>
+        </ul>
+
+        <p>The code for <code>kfree()</code> is below:</p>
+
+<pre><code>void kfree(uint32_t* data_ptr) {
+    struct heap_header* header = (struct heap_header*)data_ptr - 1;
+    header->is_free = 1;
+    
+    if(header->next != NULL && header->next->is_free) {
+        header->size += header->next->size + sizeof(struct heap_header);
+        header->next = header->next->next;
+        if(header->next) header->next->prev = header;
+    }
+}</code></pre>
+
     </article>
 
     <footer>
         <p>© 2026 Shreyas Narayanan</p>
     </footer>
 </body>
-
 </html>
