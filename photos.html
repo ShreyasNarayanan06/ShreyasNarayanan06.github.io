@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photos - Shreyas Narayanan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="IMG_0300.jpg">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0px;
+            color: #333;
+            background: #fff;
+        }
+        .header, .main-content {
+            margin: 40px 200px;
+        }
+        @media (max-width: 768px) {
+            .header, .main-content {
+                margin: 40px 20px;
+            }
+        }
+        .hyperlinks {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .links {
+            font-size: 15px;
+            color: inherit;
+            text-decoration: none;
+        }
+        .links:hover {
+            color: #2563eb;
+        }
+
+        .hero-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            align-items: start;
+        }
+        
+        .photo-card {
+            cursor: pointer;
+        }
+        
+        .photo-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Lightbox styling */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .lightbox img {
+            max-width: 95%;
+            max-height: 95%;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="name">
+            <h2>Shreyas Narayanan</h2>
+        </div>
+        <div class="hyperlinks">
+                <a href="index.html" class="links">Home</a>
+                <a href="blog.html" class="links">Blog</a>
+                <a href="photos.html" class="links" style="font-weight: 600; color: #2563eb;">Photos</a>
+                <a href="resume.pdf" class="links">Resume</a>
+        </div>
+    </div>
+    <hr>
+    <main class="main-content">
+        <h1 class="hero-title">Photos</h1>
+        
+        <div class="photo-grid">
+            <div class="photo-card" onclick="openLightbox('photos/IMG_0162.jpg')">
+                <img src="photos/IMG_0162.jpg" alt="Photo">
+            </div>
+            <div class="photo-card" onclick="openLightbox('photos/IMG_0203.jpg')">
+                <img src="photos/IMG_0203.jpg" alt="Photo">
+            </div>
+            <div class="photo-card" onclick="openLightbox('photos/IMG_0232.jpg')">
+                <img src="photos/IMG_0232.jpg" alt="Photo">
+            </div>
+            <div class="photo-card" onclick="openLightbox('photos/IMG_0255.jpg')">
+                <img src="photos/IMG_0255.jpg" alt="Photo">
+            </div>
+            <div class="photo-card" onclick="openLightbox('photos/IMG_0288.jpg')">
+                <img src="photos/IMG_0288.jpg" alt="Photo">
+            </div>
+            <div class="photo-card" onclick="openLightbox('photos/IMG_0292.jpg')">
+                <img src="photos/IMG_0292.jpg" alt="Photo">
+            </div>
+            <div class="photo-card" onclick="openLightbox('photos/IMG_0295.jpg')">
+                <img src="photos/IMG_0295.jpg" alt="Photo">
+            </div>
+            <div class="photo-card" onclick="openLightbox('photos/IMG_0300.jpg')">
+                <img src="photos/IMG_0300.jpg" alt="Photo">
+            </div>
+            <div class="photo-card" onclick="openLightbox('photos/IMG_0356.jpg')">
+                <img src="photos/IMG_0356.jpg" alt="Photo">
+            </div>
+            <div class="photo-card" onclick="openLightbox('photos/IMG_0376.jpg')">
+                <img src="photos/IMG_0376.jpg" alt="Photo">
+            </div>
+            <div class="photo-card" onclick="openLightbox('photos/IMG_0377.jpg')">
+                <img src="photos/IMG_0377.jpg" alt="Photo">
+            </div>
+            <div class="photo-card" onclick="openLightbox('photos/IMG_0490.jpg')">
+                <img src="photos/IMG_0490.jpg" alt="Photo">
+            </div>
+            <div class="photo-card" onclick="openLightbox('photos/IMG_0651.jpg')">
+                <img src="photos/IMG_0651.jpg" alt="Photo">
+            </div>
+            <div class="photo-card" onclick="openLightbox('photos/IMG_0876.jpg')">
+                <img src="photos/IMG_0876.jpg" alt="Photo">
+            </div>
+            <div class="photo-card" onclick="openLightbox('photos/IMG_0944.jpg')">
+                <img src="photos/IMG_0944.jpg" alt="Photo">
+            </div>
+            <div class="photo-card" onclick="openLightbox('photos/PXL_20260301_225415217.jpg')">
+                <img src="photos/PXL_20260301_225415217.jpg" alt="Photo">
+            </div>
+        </div>
+    </main>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="close-btn" onclick="closeLightbox()">&times;</span>
+        <img id="lightbox-img" src="" alt="Zoomed Photo">
+    </div>
+
+    <script>
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').style.display = 'flex';
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+        }
+        // Close lightbox on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>
