@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
+    <title>Blog - Shreyas Narayanan</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -56,44 +56,35 @@
         a:hover {
             text-decoration: underline;
         }
-        .section-divider {
-            border: none;
-            border-top: 1px solid #e5e7eb;
-            margin: 40px 0;
-        }
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
+        
         .blog-list {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 30px;
+            margin-top: 30px;
         }
         .blog-item {
             display: flex;
-            gap: 20px;
-            align-items: baseline;
-        }
-        @media (max-width: 600px) {
-            .blog-item {
-                flex-direction: column;
-                gap: 4px;
-            }
+            flex-direction: column;
+            gap: 6px;
         }
         .blog-meta {
             color: #6b7280;
             font-size: 0.875rem;
-            min-width: 120px;
         }
         .blog-link {
-            font-weight: 500;
+            font-size: 1.25rem;
+            font-weight: 600;
             color: #2563eb;
             text-decoration: none;
         }
         .blog-link:hover {
             text-decoration: underline;
+        }
+        .blog-summary {
+            color: #4b5563;
+            line-height: 1.5;
+            margin: 0;
         }
     </style>
 </head>
@@ -104,28 +95,21 @@
         </div>
         <div class="hyperlinks">
                 <a href="index.html" class="links">Home</a>
-                <a href="blog.html" class="links">Blog</a>
+                <a href="blog.html" class="links" style="font-weight: 600; color: #2563eb;">Blog</a>
                 <a href="resume.pdf" class="links">Resume</a>
         </div>
     </div>
     <hr>
     <main class="main-content">
-        <p><b>Hi, I'm Shreyas</b></p>
-        <p>I'm currently working as a Flight Software Intern at <a href="https://www.reditus.space/">Reditus Space</a> writing Propulsion and Testing infrastructure for the <a href="https://www.reditus.space/news/enos-mission-announcement/">ENOS Mk1 Mission</a>.</p>
-        <p>I'm also the Co-Founder and Technical Lead for <a href="https://risc-m.github.io/website-home/">RISC-M</a>, The University of Michigan's first chip design club. I'm currently working on <a href="https://github.com/RISC-M/Inference-M">Inference-M</a>, a custom ML accelerator that leverages <a href="https://arxiv.org/abs/2603.26438">Direct Compute Access (DCA)</a> in a 2D mesh NoC to perform in network reductions, enabling collective communication primitives like multicast and barrier sync to stay off the critical path of GEMM workloads.</p>
-        <p>Additionally, I'm a part of <a href="https://theisclab.com/">the ISC lab</a> where I do embedded systems research for human centered computing applications.</p>
+        <h1 class="hero-title">Blog</h1>
         
-        <hr class="section-divider">
-        
-        <section class="blog-section">
-            <h3 class="section-title">Blog Posts</h3>
-            <div class="blog-list">
-                <div class="blog-item">
-                    <span class="blog-meta">July 4, 2026</span>
-                    <a href="blog/virtual-memory.html" class="blog-link">Virtual Memory Management in TestOS</a>
-                </div>
+        <div class="blog-list">
+            <div class="blog-item">
+                <span class="blog-meta">July 4, 2026</span>
+                <a href="blog/virtual-memory.html" class="blog-link">Virtual Memory Management in TestOS</a>
+                <p class="blog-summary">An exploration of implementing demand-paged virtual memory, recursive page directory mapping, and a heap allocator in a 32-bit x86 monolithic kernel.</p>
             </div>
-        </section>
+        </div>
     </main>
 </body>
 </html>
