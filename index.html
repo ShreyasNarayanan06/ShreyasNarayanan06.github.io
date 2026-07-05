@@ -7,11 +7,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="IMG_0300.jpg">
     <style>
         body {
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0px;
+            color: #333;
+            background: #fff;
+        }
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #1a1a1a;
+                color: #ddd;
+            }
+            .links:hover {
+                color: #8ab4f8;
+            }
+            a {
+                color: #8ab4f8;
+            }
         }
         .header, .main-content {
             margin: 40px 200px;
@@ -47,7 +62,7 @@
         .main-content p {
             line-height: 1.6;
             margin-bottom: 16px;
-            color: #4b5563;
+            color: inherit;
         }
         a {
             color: #2563eb;
@@ -55,13 +70,6 @@
         }
         a:hover {
             text-decoration: underline;
-        }
-        .profile-pic {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 24px;
         }
         .social-links {
             display: flex;
@@ -133,7 +141,6 @@
     </div>
     <hr>
     <main class="main-content">
-        <img src="IMG_0300.jpg" alt="Shreyas Narayanan" class="profile-pic">
         <p><b>Hi, I'm Shreyas</b></p>
         <p>I'm currently working as a Flight Software Intern at <a href="https://www.reditus.space/">Reditus Space</a> writing Propulsion and Testing infrastructure for the <a href="https://www.reditus.space/news/enos-mission-announcement/">ENOS Mk1 Mission</a>.</p>
         <p>I'm also the Co-Founder and Technical Lead for <a href="https://risc-m.github.io/website-home/">RISC-M</a>, The University of Michigan's first chip design club. I'm currently working on <a href="https://github.com/RISC-M/Inference-M">Inference-M</a>, a custom ML accelerator that leverages <a href="https://arxiv.org/abs/2603.26438">Direct Compute Access (DCA)</a> in a 2D mesh NoC to perform in network reductions, enabling collective communication primitives like multicast and barrier sync to stay off the critical path of GEMM workloads.</p>
