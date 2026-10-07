@@ -3,168 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="description" content="Shreyas Narayanan — flight software, chip design, and embedded systems at the University of Michigan.">
+    <meta name="theme-color" content="#faf9f6">
+    <title>Shreyas Narayanan</title>
     <link rel="icon" type="image/png" href="HSS0_2_gray.png">
     <style>
+        :root {
+            color-scheme: light;
+            background: #faf9f6;
+            color: #282d2c;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+            font-synthesis: none;
+        }
+        * { box-sizing: border-box; }
         body {
-            font-family: 'Inter', sans-serif;
             margin: 0;
-            padding: 0px;
-            color: #333;
-            background: #fff;
+            min-height: 100svh;
+            display: grid;
+            align-items: center;
+            padding: 64px 24px;
         }
-        .header, .main-content {
-            margin: 40px 200px;
+        main {
+            width: 100%;
+            max-width: 580px;
+            margin-inline: auto;
         }
-        @media (max-width: 768px) {
-            .header, .main-content {
-                margin: 40px 20px;
-            }
+        .art {
+            width: fit-content;
+            margin: 0 0 36px;
+            color: #627875;
         }
-        .hyperlinks {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-            flex-wrap: wrap;
+        .art pre {
+            margin: 0;
+            font-family: inherit;
+            font-size: 9px;
+            width: 32ch;
+            height: 21.6em;
+            line-height: 1.2;
+            letter-spacing: 0;
+            white-space: pre;
+            font-variant-ligatures: none;
         }
-
-        .links {
+        h1 {
+            margin: 0 0 22px;
+            font-size: clamp(22px, 4.5vw, 28px);
+            font-weight: 500;
+            letter-spacing: -1px;
+            line-height: 1.3;
+        }
+        p {
+            margin: 0;
             font-size: 15px;
-            color: inherit;
-            text-decoration: none;
-        }
-        .links:hover {
-            color: #2563eb;
-        }
-
-        .hero-title {
-            font-size: 2.25rem;
-            font-weight: 700;
-            margin-top: 40px;
-            margin-bottom: 20px;
-        }
-
-        .main-content p {
-            line-height: 1.6;
-            margin-bottom: 16px;
-            color: inherit;
+            line-height: 1.85;
+            color: #525957;
+            text-wrap: pretty;
         }
         a {
-            color: #2563eb;
-            text-decoration: none;
+            color: inherit;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 4px;
         }
-        a:hover {
-            text-decoration: underline;
+        a:hover { color: #24594f; }
+        a:focus-visible {
+            outline: 2px solid #24594f;
+            outline-offset: 5px;
+            border-radius: 1px;
         }
-        .social-links {
-            display: flex;
-            gap: 16px;
-            margin-top: 24px;
-            margin-bottom: 24px;
-        }
-        .social-icon {
-            width: 24px;
-            height: 24px;
-            color: #4b5563;
-            transition: color 0.2s ease, transform 0.2s ease;
-        }
-        .social-icon:hover {
-            color: #2563eb;
-            transform: scale(1.15);
-        }
-        .section-divider {
-            border: none;
-            border-top: 1px solid #e5e7eb;
-            margin: 40px 0;
-        }
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-        .blog-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .blog-item {
-            display: flex;
-            gap: 20px;
+        .resume {
+            display: inline-flex;
             align-items: baseline;
+            gap: 10px;
+            margin-top: 30px;
+            font-size: 15px;
         }
-        @media (max-width: 600px) {
-            .blog-item {
-                flex-direction: column;
-                gap: 4px;
-            }
+        .resume span {
+            font-size: 11px;
+            color: #69706d;
         }
-        .blog-meta {
-            color: #6b7280;
-            font-size: 0.875rem;
-            min-width: 120px;
+        .contact {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 24px;
+            margin-top: 48px;
+            padding-top: 22px;
+            border-top: 1px solid #dddfd9;
+            color: #616965;
+            font-size: 12px;
         }
-        .blog-link {
-            font-weight: 500;
-            color: #2563eb;
-            text-decoration: none;
-        }
-        .blog-link:hover {
-            text-decoration: underline;
+        @media (max-width: 480px) {
+            body { padding: 48px 24px; }
+            .art { margin-bottom: 28px; }
+            .contact { margin-top: 36px; }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="name">
-            <h2>Shreyas Narayanan</h2>
+    <main>
+        <!-- Cube animation from ascii.rest by bas3line; MIT license in assets/ascii/LICENSE. -->
+        <div class="art" aria-hidden="true">
+            <pre id="ascii-art">
+
+        +------------------+
+       /  .   .   .   .   /|
+      / .   .   .   .    / |
+     /    .   .   .   . / :|
+    +------------------+ : |
+    | . . . . . . . . .|: :|
+    |. . . . . . . . . | : |
+    | . . . . . . . . .|: :|
+    |. . . . . . . . . | : |
+    | . . . . . . . . .|:  +
+    |. . . . . . . . . |  /
+    | . . . . . . . . .| /
+    |. . . . . . . . . |/
+    +------------------+
+
+</pre>
         </div>
-        <div class="hyperlinks">
-                <a href="index.html" class="links">Home</a>
-                <a href="blog.html" class="links">Blog</a>
-                <a href="photos.html" class="links">Photos</a>
-                <a href="resume.pdf" class="links">Resume</a>
-        </div>
-    </div>
-    <hr>
-    <main class="main-content">
-        <p><b>Hi, I'm Shreyas</b></p>
-        <p>I'm currently working as a Flight Software Intern at <a href="https://www.reditus.space/">Reditus Space</a> writing Propulsion and Testing infrastructure for the <a href="https://www.reditus.space/news/enos-mission-announcement/">ENOS Mk1 Mission</a>.</p>
-        <p>I'm also the Co-Founder and Technical Lead for <a href="https://risc-m.github.io/website-home/">RISC-M</a>, The University of Michigan's first chip design club. I'm currently working on <a href="https://github.com/RISC-M/Inference-M">Inference-M</a>, a custom ML accelerator that leverages <a href="https://arxiv.org/abs/2603.26438">Direct Compute Access (DCA)</a> in a 2D mesh NoC to perform in network reductions, enabling collective communication primitives like multicast and barrier sync to stay off the critical path of GEMM workloads.</p>
-        <p>Additionally, I'm a part of <a href="https://theisclab.com/">the ISC lab</a> where I do embedded systems research for human centered computing applications.</p>
-        
-        <div class="social-links">
-            <a href="https://github.com/ShreyasNarayanan06" target="_blank" aria-label="GitHub">
-                <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.867 8.17 6.84 9.49.5.08.66-.22.66-.48 0-.24-.01-.88-.01-1.72-2.782.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.555-1.11-4.555-4.94 0-1.1.39-1.99 1.03-2.69-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.7 1.03 1.6 1.03 2.69 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85 0 1.34-.01 2.42-.01 2.75 0 .27.16.57.67.48C19.137 20.17 22 16.42 22 12c0-5.523-4.477-10-10-10z"/>
-                </svg>
-            </a>
-            <a href="https://www.linkedin.com/in/shreyasnara/" target="_blank" aria-label="LinkedIn">
-                <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                </svg>
-            </a>
-            <a href="mailto:nshreyas@umich.edu" aria-label="Email">
-                <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                    <polyline points="22,6 12,13 2,6"/>
-                </svg>
-            </a>
-        </div>
-        
-        <hr class="section-divider">
-        
-        <section class="blog-section">
-            <h3 class="section-title">Blog Posts</h3>
-            <div class="blog-list">
-                <div class="blog-item">
-                    <span class="blog-meta">July 4, 2026</span>
-                    <a href="blog/virtual-memory.html" class="blog-link">Virtual Memory Management in TestOS</a>
-                </div>
-            </div>
-        </section>
+        <h1>Shreyas Narayanan</h1>
+        <p>I build hardware and the software that brings it to life.
+            At the University of Michigan, I co-founded <a href="https://risc-m.github.io/website-home/">RISC-M</a>, our first chip design club.
+            My work spans flight software at <a href="https://www.reditus.space/">Reditus Space</a> and embedded systems research in <a href="https://theisclab.com/">the ISC Lab</a>.</p>
+        <a class="resume" href="resume.pdf">Résumé <span>PDF ↗</span></a>
+        <nav class="contact" aria-label="Contact and profiles">
+            <a href="mailto:nshreyas@umich.edu">Email</a>
+            <a href="https://github.com/ShreyasNarayanan06">GitHub</a>
+            <a href="https://www.linkedin.com/in/shreyasnara/">LinkedIn</a>
+        </nav>
     </main>
+    <script type="module">
+        import * as piece from "./assets/ascii/cube.js";
+        import { mount } from "./assets/ascii/mount.js";
+
+        mount(document.getElementById("ascii-art"), piece);
+    </script>
 </body>
 </html>
