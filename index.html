@@ -36,8 +36,8 @@
         .art pre {
             margin: 0;
             font-family: inherit;
-            font-size: 9px;
-            width: 32ch;
+            font-size: clamp(7px, 1.9vw, 9px);
+            width: 64ch;
             height: 21.6em;
             line-height: 1.2;
             letter-spacing: 0;
@@ -99,24 +99,24 @@
 </head>
 <body>
     <main>
-        <!-- Cube animation from ascii.rest by bas3line; MIT license in assets/ascii/LICENSE. -->
+        <!-- Planet animation from ascii.rest by bas3line; MIT license in assets/ascii/LICENSE. -->
         <div class="art" aria-hidden="true">
-            <pre id="ascii-art">
-
-        +------------------+
-       /  .   .   .   .   /|
-      / .   .   .   .    / |
-     /    .   .   .   . / :|
-    +------------------+ : |
-    | . . . . . . . . .|: :|
-    |. . . . . . . . . | : |
-    | . . . . . . . . .|: :|
-    |. . . . . . . . . | : |
-    | . . . . . . . . .|:  +
-    |. . . . . . . . . |  /
-    | . . . . . . . . .| /
-    |. . . . . . . . . |/
-    +------------------+
+            <pre id="ascii-art">                                                    ·
+ .                                              .
+                             #%#%%%
+          =========:::::-=++####%###%%#                ·
+       ====,...,,,,,,,=#====+*++######*#*#    ·
+     ==- ..,,,,=+#@@@%*#+-==--=====+++===+*==-=
+    ==- ..,,,=@@@@  ##*##*+=-----=-----===*@,..,===
+     =- ..,,,@@@@  +###=:-++**#****++++++=*@@%+,,..:==
+      ==:.,,,-@@@  =---=#=++*#***********##@@@@@+,,,.,===
+       ===,.,,,+@@@+=----===****++*******#%@@  @@@-,,,.:==
+          ==:..,,-+%#==-:--:::-=***+==--+*%@@  @@@@,,,.. -=
+             ===,..,,==+#++=--::::::--=+*%@@  @@@@=,,,.. -==.
+                 =-=:-=.,,:==--***===+*%@@@@@@#+=,,,,.. -==
+                      =*#*::-=:...,,,,,,,,,,,,,,,...,====
+                         @@@@****#%###:::::::=========
+                             @@@@@@
 
 </pre>
         </div>
@@ -132,7 +132,7 @@
         </nav>
     </main>
     <script type="module">
-        import * as piece from "./assets/ascii/cube.js";
+        import * as piece from "./assets/ascii/planet.js";
         import { mount } from "./assets/ascii/mount.js";
 
         mount(document.getElementById("ascii-art"), piece);
